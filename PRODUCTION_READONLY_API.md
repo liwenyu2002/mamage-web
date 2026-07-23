@@ -8,6 +8,15 @@
 https://mamage.wenyuli.site
 ```
 
+当前可用的内网后端入口（2026-07-23 实测）：
+
+```text
+物理局域网：  http://10.100.65.147:8080
+ZeroTier：    http://10.11.12.63:8080
+```
+
+两个地址的 `GET /api/health` 均返回 `{"status":"ok"}`。前端人员和 Mac Mini 处在同一校园局域网时优先使用物理局域网地址；不在同一局域网但加入了 ZeroTier 时使用 ZeroTier 地址。物理局域网 DHCP 地址可能轮换，ZeroTier 地址通常更稳定。
+
 ## 1. 推荐调用方式
 
 ### 1.1 本项目本地开发
@@ -55,7 +64,29 @@ const data = await response.json();
 
 然后仍然调用 `/api/...`。这样可以避免跨域，也不会把对象存储密钥暴露给浏览器。
 
-### 1.3 认证
+### 1.3 内网开发代理
+
+需要走物理局域网时，将开发服务器代理目标改为：
+
+```bash
+MAMAGE_BACKEND_URL=http://10.100.65.147:8080 \
+MAMAGE_DISABLE_DIRECT_UPLOAD=1 \
+WEBPACK_DEV_SERVER_PORT=5173 \
+npx webpack serve --mode development
+```
+
+需要走 ZeroTier 时只替换目标地址：
+
+```bash
+MAMAGE_BACKEND_URL=http://10.11.12.63:8080 \
+MAMAGE_DISABLE_DIRECT_UPLOAD=1 \
+WEBPACK_DEV_SERVER_PORT=5173 \
+npx webpack serve --mode development
+```
+
+本地页面仍然访问 `http://localhost:5173`，前端代码仍然调用 `/api/...`，不需要把内网 IP 写进业务组件。
+
+### 1.4 认证
 
 分享接口和健康检查不需要登录。组织内项目、照片、人脸等接口需要生产环境 JWT：
 
