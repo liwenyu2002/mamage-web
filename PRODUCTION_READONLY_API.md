@@ -12,10 +12,9 @@ https://mamage.wenyuli.site
 
 ```text
 物理局域网：  http://10.100.65.147:8080
-ZeroTier：    http://10.11.12.63:8080
 ```
 
-两个地址的 `GET /api/health` 均返回 `{"status":"ok"}`。前端人员和 Mac Mini 处在同一校园局域网时优先使用物理局域网地址；不在同一局域网但加入了 ZeroTier 时使用 ZeroTier 地址。物理局域网 DHCP 地址可能轮换，ZeroTier 地址通常更稳定。
+该地址的 `GET /api/health` 已实测返回 `{"status":"ok"}`。物理局域网 DHCP 地址可能轮换，变更后需要同步更新本文档和开发代理目标。
 
 ## 1. 推荐调用方式
 
@@ -70,15 +69,6 @@ const data = await response.json();
 
 ```bash
 MAMAGE_BACKEND_URL=http://10.100.65.147:8080 \
-MAMAGE_DISABLE_DIRECT_UPLOAD=1 \
-WEBPACK_DEV_SERVER_PORT=5173 \
-npx webpack serve --mode development
-```
-
-需要走 ZeroTier 时只替换目标地址：
-
-```bash
-MAMAGE_BACKEND_URL=http://10.11.12.63:8080 \
 MAMAGE_DISABLE_DIRECT_UPLOAD=1 \
 WEBPACK_DEV_SERVER_PORT=5173 \
 npx webpack serve --mode development
